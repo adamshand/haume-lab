@@ -1,3 +1,12 @@
+port: 53
+httpPort: 4000
+httpsPort: 443
+tlsPort: 853
+# certFile: dns.haume.nz.crt
+# keyFile: dns.haume.nz.key
+
+bootstrapDns: 1.1.1.1
+
 upstream:
   default:
     - 1.1.1.1
@@ -7,64 +16,66 @@ upstream:
     # adguard
     - 94.140.14.140
     - 94.140.14.141
+
 customDNS:
+  customTTL: 1h
+
   mapping:
-    # hosts
+    # servers
     kauri.haume.nz:     172.16.1.50
     nikau.haume.nz:     172.16.1.51
-    # services
-    dns.haume.nz:       172.16.1.51 # dns-over-tls
-    fuzzler.haume.nz:   172.16.1.51
-    kapua.haume.nz:     172.16.1.51 # cloud
+    # services (production)
     kiriata.haume.nz:   172.16.1.51 # media / jellyfin
     puka.haume.nz:      172.16.1.51 # book
     puoro.haume.nz:     172.16.1.51 # music
-    git.haume.nz:       172.16.1.51 # gitea
     static.haume.nz:    172.16.1.51
+    # services (experimental)
+    dns.haume.nz:       172.16.1.51 # dns-over-tls
+    fuzzler.haume.nz:   172.16.1.51
+    kapua.haume.nz:     172.16.1.51 # cloud
+    git.haume.nz:       172.16.1.51 # gitea
     ora.haume.nz:       172.16.1.51 # uptime-kuma
-    gts.haume.nz:        172.16.1.51 # gotosocial
-conditional:
+    gts.haume.nz:       172.16.1.51 # gotosocial
+
   rewrite:
     ## rewrite foo.spack.org as foo.haume.nz before dns resolution
-    #spack.org: haume.nz
+    # spack.org: haume.nz
+
+    ## https://support.mozilla.org/en-US/kb/canary-domain-use-application-dnsnet
     ## rewrite firefox canary to something non-existant
-    # https://support.mozilla.org/en-US/kb/canary-domain-use-application-dnsnet
     use-application-dns.net: diedie.die
+
+conditional:
   mapping:
     # queries for *.groundtruth.co.nz are directed to a specific resolver
     groundtruth.co.nz: 192.168.81.1
     #groundtruth.co.nz: 172.16.1.50
+    # for all unqualified hostnames
+    #.: 168.168.0.1
+
 blocking:
+  refreshPeriod: 3h
+  blockType: zeroIP
+
   blackLists:
     ads:
-      # https://github.com/topics/pihole-blocklists
-      - https://dblw.oisd.nl/
-#      - https://raw.githubusercontent.com/hectorm/hmirror/master/data/adguard-simplified/list.txt
-#      - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-#      - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
-#      - https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt
-#      - |
-#        spack.org
+      # Steven Black list is tested and works
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+      - |
+        stupidexamplethatsblocked.com
   whiteLists:
     ads:
-#      - https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
-      #- https://gitlab.com/ZeroDot1/CoinBlockerLists/-/raw/master/white_list.txt
+      # - https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
+      # - https://gitlab.com/ZeroDot1/CoinBlockerLists/-/raw/master/white_list.txt
       - |
         shand.net
-#        spack.org
-#        shmoo.com
-#        pekapekahill.nz
-#        livingground.nz
-#        groundtruth.co.nz
-#        trap.nz
-#        haume.nz
+        shmoo.com
+        pekapekahill.nz
+        livingground.nz
+        groundtruth.co.nz
+        trap.nz
+        haume.nz
+
   clientGroupsBlock:
     default:
       - ads
-bootstrapDns: 1.1.1.1
-port: 53
-httpPort: 4000
-httpsPort: 443
-tlsPort: 853
-certFile: dns.haume.nz.crt
-keyFile: dns.haume.nz.key

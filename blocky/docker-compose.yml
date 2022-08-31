@@ -2,7 +2,7 @@
 version: "3"
 
 networks:
-  caddy:
+  public:
     external: true
 
 services:
@@ -24,4 +24,4 @@ services:
       - ./conf/dns.haume.nz.crt:/app/dns.haume.nz.crt
       - ./conf/dns.haume.nz.key:/app/dns.haume.nz.key
     networks:
-      - caddy
+      - public
